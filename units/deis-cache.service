@@ -1,5 +1,5 @@
 [Unit]
-Description=audiometric-cache
+Description=deis-cache
 
 [Service]
 EnvironmentFile=/etc/environment
@@ -13,3 +13,8 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+
+[X-Fleet]
+Conflicts=*.web.*.service
+Conflicts=*.worker.*.service
+MachineOf=deis-database.service

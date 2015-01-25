@@ -1,5 +1,5 @@
 [Unit]
-Description=audiometric-database
+Description=deis-database
 
 [Service]
 EnvironmentFile=/etc/environment
@@ -15,3 +15,7 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+
+[X-Fleet]
+Conflicts=*.web.*.service
+Conflicts=*.worker.*.service
