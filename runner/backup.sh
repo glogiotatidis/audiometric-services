@@ -24,6 +24,10 @@ set -eo pipefail
   echo "Need DEIS_DOMAIN defined that you are using for your wildcard DNS for DEIS"
   false
 }
+[ -n "$HOST" ] || {
+  echo "Need HOST of container defined"
+  false
+}
 
 # Define this if you are worried about SSLed access to both Deis and AWS
 USE_HTTPS="${USE_HTTPS:-False}"
@@ -31,7 +35,7 @@ USE_HTTPS="${USE_HTTPS:-False}"
 DEIS_CONFIG_FILE=${DEIS_CONFIG_FILE:-~/.s3cfg.deis}
 AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-~/.s3cfg.aws}
 
-ETCD_ENDPOINT="$(ifconfig docker0 | awk '/\<inet\>/ { print $2}'):4001"
+ETCD_ENDPOINT="${HOST}"
 CEPH_ACCESS_KEY_ID="$(etcdctl get deis/store/gateway/accessKey)"
 CEPH_SECRET_ACCESS_KEY="$(etcdctl get deis/store/gateway/secretKey)"
 DATABASE_BUCKET_NAME="$(etcdctl get /deis/database/bucketName)"
