@@ -188,19 +188,17 @@ website_index = index.html
 EOF
 
 set -x
-# Create the destination buckets
-s3cmd -c "${AWS_CONFIG_FILE}" mb "s3://${AWS_BACKUP_BUCKET}" || true
 
 # Copy the deis db_wal bucket locally
 mkdir -p "${DATABASE_BUCKET_NAME}/"
 s3cmd -c "${DEIS_CONFIG_FILE}" sync "s3://${DATABASE_BUCKET_NAME}/" "${DATABASE_BUCKET_NAME}"/
 
 # Copy the local db_wal bucket to AWS
-s3cmd -c "${AWS_CONFIG_FILE}" sync "${DATABASE_BUCKET_NAME}"/ "s3://${AWS_BACKUP_BUCKET}/database"
+s3cmd -c "${AWS_CONFIG_FILE}" sync "${DATABASE_BUCKET_NAME}"/ "s3://${AWS_BACKUP_BUCKET}/deis/"
 
 # Copy the deis registry bucket locally
 mkdir -p "${REGISTRY_BUCKET_NAME}/"
 s3cmd -c "${DEIS_CONFIG_FILE}" sync "s3://${REGISTRY_BUCKET_NAME}/" "${REGISTRY_BUCKET_NAME}"/
 
 # Copy the local registry bucket to AWS
-s3cmd -c "${AWS_CONFIG_FILE}" sync "${REGISTRY_BUCKET_NAME}"/ "s3://${AWS_BACKUP_BUCKET}/registry"
+s3cmd -c "${AWS_CONFIG_FILE}" sync "${REGISTRY_BUCKET_NAME}"/ "s3://${AWS_BACKUP_BUCKET}/deis/"

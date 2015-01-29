@@ -5,5 +5,5 @@ Description=deis-backup
 TimeoutStartSec=20m
 ExecStartPre=/bin/sh -c "docker history audiometric/runner:v0.0.1 >/dev/null || docker pull audiometric/runner:v0.0.1"
 ExecStartPre=/bin/sh -c "docker inspect am-runner-backup >/dev/null 2>&1 && docker rm -f am-runner-backup >/dev/null 2>&1 || true"
-ExecStart=/bin/sh -c "docker run --name am-runner-backup -e HOST=$COREOS_PRIVATE_IPV4 -e AWS_ACCESS_KEY_ID=XXX -e AWS_SECRET_ACCESS_KEY=XXX -e AWS_BACKUP_BUCKET=am-archives -e DEIS_DOMAIN=cloud-audiometric.io audiometric/runner:v0.0.1 ./home/backup.sh"
+ExecStart=/bin/sh -c "docker run --name am-runner-backup -e HOST=$COREOS_PRIVATE_IPV4 -e AWS_ACCESS_KEY_ID=XXX -e AWS_SECRET_ACCESS_KEY=XXX -e AWS_BACKUP_BUCKET=am-archives -e DEIS_DOMAIN=cloud-audiometric.com audiometric/runner:v0.0.1 ./home/backup.sh"
 ExecStopPost=-/usr/bin/docker rm -f am-runner-backup
