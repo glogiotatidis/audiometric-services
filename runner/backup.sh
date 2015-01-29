@@ -29,17 +29,27 @@ set -eo pipefail
   false
 }
 
+# configure etcd
+ETCD_PORT=${ETCD_PORT:-4001}
+ETCD="$HOST:$ETCD_PORT"
+ETCD_TTL=${ETCD_TTL:-10}
+
+# wait for etcd to be available
+until etcdctl --no-sync -C $ETCD ls >/dev/null 2>&1; do
+  echo "runner: waiting for etcd at $ETCD..."
+  sleep $(($ETCD_TTL/2))  # sleep for half the TTL
+done
+
 # Define this if you are worried about SSLed access to both Deis and AWS
 USE_HTTPS="${USE_HTTPS:-False}"
 
 DEIS_CONFIG_FILE=${DEIS_CONFIG_FILE:-~/.s3cfg.deis}
 AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-~/.s3cfg.aws}
 
-ETCD_ENDPOINT="${HOST}"
-CEPH_ACCESS_KEY_ID="$(etcdctl get deis/store/gateway/accessKey)"
-CEPH_SECRET_ACCESS_KEY="$(etcdctl get deis/store/gateway/secretKey)"
-DATABASE_BUCKET_NAME="$(etcdctl get /deis/database/bucketName)"
-REGISTRY_BUCKET_NAME="$(etcdctl get /deis/registry/bucketName)"
+CEPH_ACCESS_KEY_ID="$(etcdctl -C ${ETCD} get deis/store/gateway/accessKey)"
+CEPH_SECRET_ACCESS_KEY="$(etcdctl -C ${ETCD} get deis/store/gateway/secretKey)"
+DATABASE_BUCKET_NAME="$(etcdctl -C ${ETCD} get /deis/database/bucketName)"
+REGISTRY_BUCKET_NAME="$(etcdctl -C ${ETCD} get /deis/registry/bucketName)"
 DATABASE_BUCKET_NAME="${DATABASE_BUCKET_NAME:-db_wal}"
 REGISTRY_BUCKET_NAME="${REGISTRY_BUCKET_NAME:-registry}"
 
