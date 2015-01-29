@@ -2,6 +2,7 @@
 Description=deis-backup
 
 [Service]
+EnvironmentFile=/etc/environment
 TimeoutStartSec=20m
 ExecStartPre=/bin/sh -c "docker history audiometric/runner:v0.0.1 >/dev/null || docker pull audiometric/runner:v0.0.1"
 ExecStartPre=/bin/sh -c "docker inspect am-runner-backup >/dev/null 2>&1 && docker rm -f am-runner-backup >/dev/null 2>&1 || true"
